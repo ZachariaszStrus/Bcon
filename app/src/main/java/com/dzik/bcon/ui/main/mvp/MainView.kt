@@ -9,17 +9,18 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import javax.inject.Inject
 import android.R.attr.duration
 import android.widget.Toast
-
-
+import com.dzik.bcon.ui.main.dagger.MainActivityScope
 
 
 @SuppressLint("ViewConstructor")
+@MainActivityScope
 class MainView @Inject constructor(
         context: MainActivity
 ) : ConstraintLayout(context) {
 
     init {
         View.inflate(context, R.layout.activity_main, this)
+        textView2.text = "lol"
     }
 
     fun updateText(text: String) {

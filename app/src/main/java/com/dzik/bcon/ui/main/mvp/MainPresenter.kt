@@ -25,11 +25,13 @@ class MainPresenter @Inject constructor(
     }
 
     private fun observeBeaconDetection(): Disposable {
+        mainView.updateText("loading")
         return model.getRestaurantByBeacon()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     mainView.toast(it.name)
+                    mainView.updateText(it.name)
                     Log.i("Restaurant", it.toString())
                 }
     }

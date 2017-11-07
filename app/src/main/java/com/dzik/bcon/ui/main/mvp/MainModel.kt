@@ -4,11 +4,12 @@ import android.util.Log
 import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.service.RestaurantService
 import com.dzik.bcon.ui.main.MainActivity
+import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 
+@MainActivityScope
 class MainModel @Inject constructor(
         val mainActivity: MainActivity,
         val restaurantService: RestaurantService
