@@ -1,5 +1,6 @@
 package com.dzik.bcon
 
+import android.content.Context
 import com.dzik.bcon.service.RestaurantService
 import dagger.Module
 import retrofit2.Retrofit
@@ -10,21 +11,17 @@ import com.google.gson.GsonBuilder
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.altbeacon.beacon.BeaconManager
+import org.altbeacon.beacon.BeaconParser
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import timber.log.Timber
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-
-
-
-
-
-/**
- * Created by dawid on 12.08.17.
- */
-
 @Module
-class BconApplicationModule {
+class BconApplicationModule(
+        val context: Context
+) {
 
     @Provides
     @BconApplicationScope
@@ -46,6 +43,7 @@ class BconApplicationModule {
     fun retrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .baseUrl("https://bcon-spring.herokuapp.com/")
                 .build()
@@ -65,5 +63,18 @@ class BconApplicationModule {
         return OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
+    }
+
+    @Provides
+    @BconApplicationScope
+    fun context(): Context = context
+
+    @Provides
+    @BconApplicationScope
+    fun beaconManager(context: Context): BeaconManager {
+        val manager = BeaconManager.getInstanceForApplication(context)
+        manager.beaconParsers.add(BeaconParser().setBeaconLayout(
+                BeaconParser.EDDYSTONE_UID_LAYOUT))
+        return manager
     }
 }

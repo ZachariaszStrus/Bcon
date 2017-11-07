@@ -1,17 +1,22 @@
 package com.dzik.bcon
 
 import android.app.Application
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 
-/**
- * Created by dawid on 12.08.17.
- */
+
+
+
 class BconApplication : Application() {
-    lateinit var component: BconApplicationComponent
+    companion object {
+        lateinit var component: BconApplicationComponent
+    }
 
     override fun onCreate() {
         super.onCreate()
 
         component = DaggerBconApplicationComponent.builder()
+                .bconApplicationModule(BconApplicationModule(this))
                 .build()
 
     }

@@ -1,9 +1,9 @@
 package com.dzik.bcon.model
 
 
-data class Restaurant (
+data class MenuItem (
         val id: Int,
         val name: String,
-        val menu: List<MenuItem>,
+        val price: Float,
         val imageUrl: String
 )
