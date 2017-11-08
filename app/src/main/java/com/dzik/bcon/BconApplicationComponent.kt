@@ -1,5 +1,6 @@
 package com.dzik.bcon
 
+import android.content.Context
 import com.dzik.bcon.service.RestaurantService
 import dagger.Component
 import org.altbeacon.beacon.BeaconManager
@@ -12,4 +13,5 @@ interface BconApplicationComponent {
 
     fun beaconManager(): BeaconManager
 
+    fun context(): Context
 }

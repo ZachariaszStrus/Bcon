@@ -20,11 +20,6 @@ import org.altbeacon.beacon.*
 import javax.inject.Inject
 import org.altbeacon.beacon.Beacon
 
-
-
-
-
-
 class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     companion object {

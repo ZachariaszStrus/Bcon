@@ -1,6 +1,7 @@
 package com.dzik.bcon.ui.main.mvp
 
 import android.util.Log
+import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.service.RestaurantService
 import com.dzik.bcon.ui.main.MainActivity
@@ -14,6 +15,8 @@ class MainModel @Inject constructor(
         val mainActivity: MainActivity,
         val restaurantService: RestaurantService
 ) {
+    val orderItems = mutableListOf<MenuItem>()
+
     fun getRestaurantByBeacon(): Observable<Restaurant> {
         return mainActivity.beaconDetected
                 .distinctUntilChanged()
@@ -23,8 +26,8 @@ class MainModel @Inject constructor(
                 }
     }
 
-//    fun getRestaurantByBeacon(): Observable<Restaurant> {
-//        return restaurantService
-//                .getRestaurant("edd1ebeac04e5defa017", "89fac117b149")
-//    }
+    fun addOrderItem(menuItem: MenuItem): List<MenuItem> {
+        orderItems.add(menuItem)
+        return orderItems
+    }
 }
