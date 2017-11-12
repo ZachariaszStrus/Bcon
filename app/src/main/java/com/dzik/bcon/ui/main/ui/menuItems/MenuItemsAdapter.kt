@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
+import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.jakewharton.rxbinding2.view.RxView
+import com.squareup.picasso.Picasso
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.menu_item_view.view.*
 import javax.inject.Inject
@@ -18,8 +20,9 @@ import javax.inject.Inject
 
 @MainActivityScope
 class MenuItemsAdapter @Inject constructor (
-        appContext: Context
-) : ArrayAdapter<MenuItem>(appContext, 0) {
+        val mainActivity: MainActivity,
+        val picasso: Picasso
+) : ArrayAdapter<MenuItem>(mainActivity, 0) {
 
     private val addClicks: PublishSubject<MenuItem> = PublishSubject.create()
 
@@ -32,13 +35,11 @@ class MenuItemsAdapter @Inject constructor (
 
         val menuItem = this.getItem(position)
 
-        convertView.menu_item_name.text = menuItem.name
-        convertView.menu_item_price.text = menuItem.price.toString()
+        convertView.nameTextView.text = menuItem.name
+        convertView.priceTextView.text = menuItem.price.toString()
 
-//        RxView.clicks(convertView)
-//                .takeUntil(RxView.detaches(parent))
-//                .map { menuItem }
-//                .subscribe(addClicks)
+        picasso.load(menuItem.imageUrl)
+                .into(convertView.imageView)
 
         return convertView
     }

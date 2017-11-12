@@ -33,7 +33,9 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     @Inject lateinit var beaconManager: BeaconManager
 
-    val beaconDetected: BehaviorSubject<BeaconUID> = BehaviorSubject.create()
+    private val beaconDetected: BehaviorSubject<BeaconUID> = BehaviorSubject.create()
+
+    fun getBeaconDetected() = beaconDetected.hide()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,14 +103,13 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
             ))
         }
 
+//        Log.d(TAG, "${beacons.size} beacons")
 //        for (beacon in beacons) {
 //            if (beacon.serviceUuid == 0xfeaa && beacon.beaconTypeCode == 0x00) {
 //                // This is a Eddystone-UID frame
 //                val namespaceId = beacon.id1
 //                val instanceId = beacon.id2
-//                Log.d(TAG, "I see a beacon transmitting namespace id: " + namespaceId +
-//                        " and instance id: " + instanceId +
-//                        " approximately " + beacon.distance + " meters away.")
+//                Log.d(TAG, "$instanceId ${beacon.distance}")
 //
 //                // Do we have telemetry data?
 //                if (beacon.extraDataFields.size > 0) {

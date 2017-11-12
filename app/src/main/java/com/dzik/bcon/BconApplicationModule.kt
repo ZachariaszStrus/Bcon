@@ -13,15 +13,15 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
+import org.altbeacon.beacon.service.ArmaRssiFilter
+import org.altbeacon.beacon.service.RunningAverageRssiFilter
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import timber.log.Timber
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-@Module
-class BconApplicationModule(
-        val context: Context
-) {
+@Module(includes = arrayOf(ContextModule::class))
+class BconApplicationModule {
 
     @Provides
     @BconApplicationScope
@@ -67,11 +67,9 @@ class BconApplicationModule(
 
     @Provides
     @BconApplicationScope
-    fun context(): Context = context
+    fun beaconManager(@ApplicationContext context: Context): BeaconManager {
+        BeaconManager.setRssiFilterImplClass(ArmaRssiFilter::class.java)
 
-    @Provides
-    @BconApplicationScope
-    fun beaconManager(context: Context): BeaconManager {
         val manager = BeaconManager.getInstanceForApplication(context)
         manager.beaconParsers.add(BeaconParser().setBeaconLayout(
                 BeaconParser.EDDYSTONE_UID_LAYOUT))

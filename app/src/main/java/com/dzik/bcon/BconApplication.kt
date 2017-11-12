@@ -16,7 +16,7 @@ class BconApplication : Application() {
         super.onCreate()
 
         component = DaggerBconApplicationComponent.builder()
-                .bconApplicationModule(BconApplicationModule(this))
+                .contextModule(ContextModule(this))
                 .build()
 
     }
