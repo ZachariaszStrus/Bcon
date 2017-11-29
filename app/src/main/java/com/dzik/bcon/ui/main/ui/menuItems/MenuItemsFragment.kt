@@ -18,8 +18,6 @@ import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
 
 
-
-
 @SuppressLint("ValidFragment")
 @MainActivityScope
 class MenuItemsFragment @Inject constructor(
