@@ -15,10 +15,12 @@ import com.dzik.bcon.ui.main.mvp.MainPresenter
 import com.dzik.bcon.ui.main.dagger.DaggerMainActivityComponent
 import com.dzik.bcon.ui.main.dagger.MainActivityModule
 import com.dzik.bcon.ui.main.mvp.MainView
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import org.altbeacon.beacon.*
 import javax.inject.Inject
 import org.altbeacon.beacon.Beacon
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
@@ -35,7 +37,14 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     private val beaconDetected: BehaviorSubject<BeaconUID> = BehaviorSubject.create()
 
-    fun getBeaconDetected() = beaconDetected.hide()
+    fun getBeaconDetected(): Observable<BeaconUID> {
+        return Observable.interval(1, TimeUnit.SECONDS)
+                .map { BeaconUID(
+                        namespace = "edd1ebeac04e5defa017",
+                        instance = "89fac117b149"
+                ) }
+//        return beaconDetected.hide()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,19 +63,13 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("This app needs location access")
-                builder.setMessage("Please grant location access so this app can detect beacons.")
-                builder.setPositiveButton(android.R.string.ok, null)
-                builder.setOnCancelListener {
-                    requestPermissions(
-                            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-                            PERMISSION_REQUEST_COARSE_LOCATION
-                    )
-                }
-                builder.show()
+                requestPermissions(
+                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                        PERMISSION_REQUEST_COARSE_LOCATION
+                )
             }
         }
+
     }
 
     override fun onPostResume() {
