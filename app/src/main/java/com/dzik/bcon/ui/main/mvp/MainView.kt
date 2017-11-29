@@ -29,6 +29,8 @@ class MainView @Inject constructor(
 
     private val visitedTabs = mutableListOf<Fragment>()
 
+    val isBeaconFound: Boolean = false
+
     init {
         View.inflate(mainActivity, R.layout.activity_main, this)
 
@@ -36,7 +38,10 @@ class MainView @Inject constructor(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.menu_items_tab -> {
-                            this.show(frame_layout, menuItemsFragment)
+                            if(isBeaconFound)
+                                this.show(frame_layout, menuItemsFragment)
+                            else
+                                this.show(frame_layout, menuItemsFragment)
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.order_items_tab -> {

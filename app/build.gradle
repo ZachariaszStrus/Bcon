@@ -5,7 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.1'
     defaultConfig {
         applicationId "com.dzik.bcon"
         minSdkVersion 24
@@ -51,7 +51,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.3.1'
 
     //Data
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.2.0'
 
     //RxJava
