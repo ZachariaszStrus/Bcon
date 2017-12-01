@@ -1,6 +1,7 @@
 package com.dzik.bcon.ui.main.ui.menuItems
 
-import android.content.Context
+import android.graphics.*
+import android.icu.lang.UCharacter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,16 @@ import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
-import com.jakewharton.rxbinding2.view.RxView
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.menu_item_view.view.*
+import kotlinx.android.synthetic.main.menu_list_header.view.*
 import javax.inject.Inject
-
-
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 
 
 @MainActivityScope
@@ -26,21 +30,47 @@ class MenuItemsAdapter @Inject constructor (
 
     private val addClicks: PublishSubject<MenuItem> = PublishSubject.create()
 
+    var headerTitle = ""
+    private val menuItemAddEmitter = BehaviorSubject.create<Int>()
+
     fun addClicks() = addClicks.hide()
+
+    override fun getCount(): Int {
+        return super.getCount() + 1
+    }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
 
-        val convertView = view ?: LayoutInflater.from(context)
-                .inflate(R.layout.menu_item_view, parent, false)
+        return view ?:
+                if(position == 0) {
+                    val view = LayoutInflater.from(context)
+                            .inflate(R.layout.menu_list_header, parent, false)
 
-        val menuItem = this.getItem(position)
+                    view.menuItemsTitle.text = headerTitle
 
-        convertView.nameTextView.text = menuItem.name
-        convertView.priceTextView.text = menuItem.price.toString()
+                    view
+                } else {
+                    val view =  LayoutInflater.from(context)
+                            .inflate(R.layout.menu_item_view, parent, false)
 
-        picasso.load(menuItem.imageUrl)
-                .into(convertView.imageView)
+                    val menuItem = getItem(position - 1)
 
-        return convertView
+                    view.nameTextView.text = menuItem.name
+                    view.priceTextView.text = menuItem.price.toString()
+
+                    view.menuItemButton.setOnClickListener {
+                        menuItemAddEmitter.onNext(menuItem.id)
+                    }
+
+                    picasso.load(menuItem.imageUrl)
+                            .placeholder(R.drawable.ic_photo_black_48px)
+                            .into(view.imageView)
+
+                    view
+        }
+    }
+
+    fun menuItemAddClicked(): Observable<Int> {
+        return menuItemAddEmitter.hide()
     }
 }

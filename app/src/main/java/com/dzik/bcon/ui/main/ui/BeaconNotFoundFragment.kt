@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.dzik.bcon.R
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
+import kotlinx.android.synthetic.main.beacon_not_found_fragment_view.*
 import javax.inject.Inject
 
 @SuppressLint("ValidFragment")
@@ -16,5 +17,13 @@ class BeaconNotFoundFragment @Inject constructor(): Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.beacon_not_found_fragment_view, container, false)
+    }
+
+    fun showProgress(show: Boolean) {
+        if(show) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.INVISIBLE
+        }
     }
 }

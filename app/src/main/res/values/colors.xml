@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff8f8d</color>
-    <color name="colorPrimaryDark">#ff6f6d</color>
-    <color name="colorAccent">#ffd0e0</color>
-    <color name="lightGrey">#D3D3D3</color>
+    <color name="colorPrimaryDark">#009688</color>
+    <color name="lightBG">#E0F2F1</color>
+    <color name="footerBG">#B2DFDB</color>
+    <color name="dark">#004D40</color>
+    <color name="footerTabColorDark">#00897B</color>
+    <color name="buttonColor">#4DB6AC</color>
 </resources>

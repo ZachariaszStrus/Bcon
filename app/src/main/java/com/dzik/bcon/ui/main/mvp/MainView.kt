@@ -88,7 +88,7 @@ class MainView @Inject constructor(
     }
 
     fun showProgress(show: Boolean) {
-        menuItemsFragment.showProgress(show)
+        beaconNotFoundFragment.showProgress(show)
     }
 
     fun addClicks(): Observable<MenuItem> {
