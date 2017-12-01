@@ -92,6 +92,14 @@ class MainView @Inject constructor(
         beaconNotFoundFragment.showProgress(show)
     }
 
+    fun menuItemsRefreshed(): Observable<Unit> {
+        return menuItemsFragment.menuItemsRefreshed()
+    }
+
+    fun menuItemsSetRefreshing(value: Boolean) {
+        menuItemsFragment.menuItemsSetRefreshing(value)
+    }
+
     fun updateOrderItems(newList: List<MenuItem>) {
         orderItemsFragment.updateList(newList)
     }
