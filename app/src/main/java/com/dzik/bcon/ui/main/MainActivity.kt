@@ -15,6 +15,7 @@ import com.dzik.bcon.ui.main.mvp.MainPresenter
 import com.dzik.bcon.ui.main.dagger.DaggerMainActivityComponent
 import com.dzik.bcon.ui.main.dagger.MainActivityModule
 import com.dzik.bcon.ui.main.mvp.MainView
+import com.google.firebase.iid.FirebaseInstanceId
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import org.altbeacon.beacon.*
