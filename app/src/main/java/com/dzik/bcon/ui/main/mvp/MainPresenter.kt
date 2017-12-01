@@ -28,13 +28,16 @@ class MainPresenter @Inject constructor(
     private fun observeBeaconDetection(): Disposable {
 
         return model.detectBeacon()
-                .distinctUntilChanged()
-                .doOnNext { Log.i("MAIN_PRESENTER new beacon:", it.toString()) }
                 .subscribeOn(Schedulers.io())
+                .doOnNext { Log.i("MAIN_PRESENTER new beacon:", it.toString()) }
+                .distinctUntilChanged()
+
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { view.showProgress(true) }
+
                 .observeOn(Schedulers.io())
                 .switchMap { model.getRestaurantByBeacon(it) }
+
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEach { view.showProgress(false) }
                 .doOnNext { view.updateRestaurant(it) }

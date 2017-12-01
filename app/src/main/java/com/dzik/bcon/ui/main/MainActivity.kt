@@ -36,13 +36,15 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     @Inject lateinit var beaconManager: BeaconManager
 
-    private val beaconDetected: BehaviorSubject<BeaconUID> = BehaviorSubject.create()
+    private val beaconDetected: BehaviorSubject<List<BeaconUID>> = BehaviorSubject.create()
 
-    fun getBeaconDetected(): Observable<BeaconUID> {
+    fun getBeaconDetected(): Observable<List<BeaconUID>> {
         return Observable.interval(1, TimeUnit.SECONDS)
-                .map { BeaconUID(
-                        namespace = "edd1ebeac04e5defa017",
-                        instance = "89fac117b149"
+                .map { listOf(
+                        BeaconUID(
+                                namespace = "edd1ebeac04e5defa017",
+                                instance = "89fac117b149"
+                        )
                 ) }
 //        return beaconDetected.hide()
     }
@@ -95,17 +97,14 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
     }
 
     override fun didRangeBeaconsInRegion(beacons: Collection<Beacon>, region: Region) {
-        if(beacons.isNotEmpty()) {
-            val nearestBeacon = beacons
-                    .filter { it.serviceUuid == 0xfeaa && it.beaconTypeCode == 0x00 }
-                    .sortedBy { it.distance }
-                    .first()
-
-            beaconDetected.onNext(BeaconUID(
-                    nearestBeacon.id1.toString().substring(2),
-                    nearestBeacon.id2.toString().substring(2)
-            ))
-        }
+        beaconDetected.onNext(beacons
+                .filter { it.serviceUuid == 0xfeaa && it.beaconTypeCode == 0x00 }
+                .sortedBy { it.distance }
+                .map { BeaconUID(
+                        it.id1.toString().substring(2),
+                        it.id2.toString().substring(2))
+                }
+        )
 
 //        Log.d(TAG, "${beacons.size} beacons")
 //        for (beacon in beacons) {
