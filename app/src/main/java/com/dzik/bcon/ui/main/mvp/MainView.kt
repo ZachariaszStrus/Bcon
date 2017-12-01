@@ -11,6 +11,7 @@ import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
+import com.dzik.bcon.ui.main.ui.BeaconNotFoundFragment
 import com.dzik.bcon.ui.main.ui.menuItems.MenuItemsFragment
 import com.dzik.bcon.ui.main.ui.orderItems.OrderItemsFragment
 import io.reactivex.Observable
@@ -24,10 +25,21 @@ import javax.inject.Inject
 class MainView @Inject constructor(
         val mainActivity: MainActivity,
         val menuItemsFragment: MenuItemsFragment,
-        val orderItemsFragment: OrderItemsFragment
+        val orderItemsFragment: OrderItemsFragment,
+        val beaconNotFoundFragment: BeaconNotFoundFragment
 ) : ConstraintLayout(mainActivity) {
 
     private val visitedTabs = mutableListOf<Fragment>()
+
+    private var isBeaconFound: Boolean = false
+        set(value) {
+            if(value)
+                this.show(frame_layout, menuItemsFragment)
+            else
+                this.show(frame_layout, beaconNotFoundFragment)
+
+            field = value
+        }
 
     init {
         View.inflate(mainActivity, R.layout.activity_main, this)
@@ -36,7 +48,11 @@ class MainView @Inject constructor(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.menu_items_tab -> {
-                            this.show(frame_layout, menuItemsFragment)
+                            if(isBeaconFound)
+                                this.show(frame_layout, menuItemsFragment)
+                            else
+                                this.show(frame_layout, beaconNotFoundFragment)
+
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.order_items_tab -> {
@@ -47,7 +63,7 @@ class MainView @Inject constructor(
                     false
                 })
 
-        this.show(frame_layout, menuItemsFragment)
+        this.show(frame_layout, beaconNotFoundFragment)
     }
 
     private fun show(dsc: FrameLayout, src: Fragment) {
@@ -62,12 +78,17 @@ class MainView @Inject constructor(
         fragmentTransaction.commit()
     }
 
-    fun updateRestaurant(restaurant: Restaurant) {
-        menuItemsFragment.updateRestaurant(restaurant)
+    fun updateRestaurant(restaurant: Restaurant?) {
+        if(restaurant != null) {
+            isBeaconFound = true
+            menuItemsFragment.updateRestaurant(restaurant)
+        } else
+            isBeaconFound = false
+
     }
 
     fun showProgress(show: Boolean) {
-        menuItemsFragment.showProgress(show)
+        beaconNotFoundFragment.showProgress(show)
     }
 
     fun addClicks(): Observable<MenuItem> {

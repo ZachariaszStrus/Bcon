@@ -16,8 +16,7 @@ import kotlinx.android.synthetic.main.menu_items_fragment.*
 import javax.inject.Inject
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
-
-
+import rx.subjects.BehaviorSubject
 
 
 @SuppressLint("ValidFragment")
@@ -27,6 +26,8 @@ class MenuItemsFragment @Inject constructor(
         val picasso: Picasso
 ) : Fragment() {
 
+    private val restaurantEmitter = BehaviorSubject.create<Restaurant>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.menu_items_fragment, container, false)
     }
@@ -34,26 +35,27 @@ class MenuItemsFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity.menu_list_view.adapter = this.menuItemsAdapter
+
+        menuItemsAdapter.menuItemAddClicked().subscribe {
+            //COŚ TAM NA KLIKNIĘCIE
+        }
+
+        restaurantEmitter.subscribe { restaurant ->
+            menuItemsAdapter.clear()
+            menuItemsAdapter.headerTitle = restaurant.name
+            menuItemsAdapter.addAll(restaurant.menu)
+
+            /*picasso
+                    .load(restaurant.imageUrl)
+                    .into(restaurantImageView)*/
+
+
+            //nameTextView.text = restaurant.name
+        }
     }
 
     fun updateRestaurant(restaurant: Restaurant) {
-        menuItemsAdapter.clear()
-        menuItemsAdapter.addAll(restaurant.menu)
-
-        picasso
-                .load(restaurant.imageUrl)
-                .into(restaurantImageView)
-
-
-        nameTextView.text = restaurant.name
-    }
-
-    fun showProgress(show: Boolean) {
-        if(show) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.INVISIBLE
-        }
+        restaurantEmitter.onNext(restaurant)
     }
 
     fun addClicks() = menuItemsAdapter.addClicks()
