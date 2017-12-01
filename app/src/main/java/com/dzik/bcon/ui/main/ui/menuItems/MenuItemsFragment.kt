@@ -1,24 +1,20 @@
 package com.dzik.bcon.ui.main.ui.menuItems
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dzik.bcon.R
+import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.menu_items_fragment.*
 import javax.inject.Inject
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import com.dzik.bcon.model.MenuItem
-import io.reactivex.Observable
-import rx.subjects.BehaviorSubject
 
 
 @SuppressLint("ValidFragment")
@@ -29,6 +25,7 @@ class MenuItemsFragment @Inject constructor(
 ) : Fragment() {
 
     private val restaurantEmitter = BehaviorSubject.create<Restaurant>()
+    private val restaurantRefreshEmitter = BehaviorSubject.create<Unit>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.menu_items_fragment, container, false)
@@ -37,10 +34,6 @@ class MenuItemsFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity.menu_list_view.adapter = this.menuItemsAdapter
-
-        menuItemsAdapter.menuItemAddClicked().subscribe {
-            //COŚ TAM NA KLIKNIĘCIE
-        }
 
         restaurantEmitter.subscribe { restaurant ->
             menuItemsAdapter.clear()
@@ -54,10 +47,22 @@ class MenuItemsFragment @Inject constructor(
 
             //nameTextView.text = restaurant.name
         }
+
+        menuListRefresh.setOnRefreshListener {
+            restaurantRefreshEmitter.onNext(Unit)
+        }
     }
 
     fun menuItemAddClicked(): Observable<MenuItem> {
         return menuItemsAdapter.menuItemAddClicked()
+    }
+
+    fun menuItemsRefreshed(): Observable<Unit> {
+        return restaurantRefreshEmitter.hide()
+    }
+
+    fun menuItemsSetRefreshing(value: Boolean) {
+        menuListRefresh.isRefreshing = value
     }
 
     fun updateRestaurant(restaurant: Restaurant) {
