@@ -18,7 +18,7 @@ class MainPresenter @Inject constructor(
 
     fun onCreate() {
         disposables.add(observeBeaconDetection())
-        disposables.add(observeAddClicks())
+        /*disposables.add(observeAddClicks())*/
     }
 
     fun onDestroy() {
@@ -42,12 +42,12 @@ class MainPresenter @Inject constructor(
                 .subscribe()
     }
 
-    private fun observeAddClicks(): Disposable {
+    /*private fun observeAddClicks(): Disposable {
         return view.addClicks()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     view.updateOrderItems(model.addOrderItem(it))
                 }
-    }
+    }*/
 }

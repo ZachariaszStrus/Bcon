@@ -1,25 +1,20 @@
 package com.dzik.bcon.ui.main.ui.menuItems
 
-import android.graphics.*
-import android.icu.lang.UCharacter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
+import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.menu_item_view.view.*
 import kotlinx.android.synthetic.main.menu_list_header.view.*
 import javax.inject.Inject
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 
 
 @MainActivityScope
@@ -28,12 +23,8 @@ class MenuItemsAdapter @Inject constructor (
         val picasso: Picasso
 ) : ArrayAdapter<MenuItem>(mainActivity, 0) {
 
-    private val addClicks: PublishSubject<MenuItem> = PublishSubject.create()
-
     var headerTitle = ""
-    private val menuItemAddEmitter = BehaviorSubject.create<Int>()
-
-    fun addClicks() = addClicks.hide()
+    private val menuItemAddEmitter = BehaviorSubject.create<MenuItem>()
 
     override fun getCount(): Int {
         return super.getCount() + 1
@@ -59,7 +50,7 @@ class MenuItemsAdapter @Inject constructor (
                     view.priceTextView.text = menuItem.price.toString()
 
                     view.menuItemButton.setOnClickListener {
-                        menuItemAddEmitter.onNext(menuItem.id)
+                        menuItemAddEmitter.onNext(menuItem)
                     }
 
                     picasso.load(menuItem.imageUrl)
@@ -70,7 +61,7 @@ class MenuItemsAdapter @Inject constructor (
         }
     }
 
-    fun menuItemAddClicked(): Observable<Int> {
+    fun menuItemAddClicked(): Observable<MenuItem> {
         return menuItemAddEmitter.hide()
     }
 }
