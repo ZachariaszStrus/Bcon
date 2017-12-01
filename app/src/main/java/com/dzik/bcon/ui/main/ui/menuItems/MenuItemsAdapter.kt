@@ -37,6 +37,7 @@ class MenuItemsAdapter @Inject constructor (
                     val view = LayoutInflater.from(context)
                             .inflate(R.layout.menu_list_header, parent, false)
 
+                    view.menuListHeaderImage.setImageResource(R.drawable.restaurant)
                     view.menuItemsTitle.text = headerTitle
 
                     view
