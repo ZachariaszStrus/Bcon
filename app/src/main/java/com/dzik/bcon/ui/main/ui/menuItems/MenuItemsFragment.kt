@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.menu_items_fragment.*
 import javax.inject.Inject
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
+import com.dzik.bcon.model.MenuItem
+import io.reactivex.Observable
 import rx.subjects.BehaviorSubject
 
 
@@ -54,9 +56,11 @@ class MenuItemsFragment @Inject constructor(
         }
     }
 
+    fun menuItemAddClicked(): Observable<MenuItem> {
+        return menuItemsAdapter.menuItemAddClicked()
+    }
+
     fun updateRestaurant(restaurant: Restaurant) {
         restaurantEmitter.onNext(restaurant)
     }
-
-    fun addClicks() = menuItemsAdapter.addClicks()
 }

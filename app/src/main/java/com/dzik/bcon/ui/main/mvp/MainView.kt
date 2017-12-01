@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Restaurant
@@ -91,11 +92,11 @@ class MainView @Inject constructor(
         beaconNotFoundFragment.showProgress(show)
     }
 
-    fun addClicks(): Observable<MenuItem> {
-        return menuItemsFragment.addClicks()
-    }
-
     fun updateOrderItems(newList: List<MenuItem>) {
         orderItemsFragment.updateList(newList)
+    }
+
+    fun menuItemAddClicked(): Observable<MenuItem> {
+        return menuItemsFragment.menuItemAddClicked()
     }
 }
