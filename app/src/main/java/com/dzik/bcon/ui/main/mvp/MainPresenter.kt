@@ -1,10 +1,11 @@
 package com.dzik.bcon.ui.main.mvp
 
 import android.util.Log
+import com.dzik.bcon.model.BeaconUID
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -18,39 +19,39 @@ class MainPresenter @Inject constructor(
 
     fun onCreate() {
         disposables.add(observeBeaconDetection())
-        /*disposables.add(observeAddClicks())*/
+        disposables.add(observeRefreshSwipe())
+        disposables.add(observeAddClicks())
     }
 
     fun onDestroy() {
         disposables.clear()
     }
 
-    private fun observeBeaconDetection(): Disposable {
+    private fun observeBeaconDetection() = model.detectBeacon()
+                    .doOnNext { Log.i("MAIN_PRESENTER new beacon:", it.toString()) }
+                    .distinctUntilChanged()
+                    .downloadRestaurantData()
+                    .doOnNext { view.updateRestaurant(it) }
+                    .doOnError { Log.e("MAIN_PRESENTER", it.message) }
+                    .subscribe()
 
-        return model.detectBeacon()
-                .subscribeOn(Schedulers.io())
-                .doOnNext { Log.i("MAIN_PRESENTER new beacon:", it.toString()) }
-                .distinctUntilChanged()
 
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { view.showProgress(true) }
+    private fun observeRefreshSwipe() = view.menuItemsRefreshed()
+                    .map { model.currentBeacon }
+                    .downloadRestaurantData()
+                    .doOnNext { view.updateRestaurant(it) }
+                    .doOnEach { view.menuItemsSetRefreshing(false) }
+                    .subscribe()
 
-                .observeOn(Schedulers.io())
-                .switchMap { model.getRestaurantByBeacon(it) }
 
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnEach { view.showProgress(false) }
-                .doOnNext { view.updateRestaurant(it) }
-                .doOnError { Log.e("MAIN_PRESENTER", it.message) }
-                .subscribe()
-    }
+    private fun Observable<BeaconUID?>.downloadRestaurantData() = this
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(Schedulers.io())
+                    .switchMap { model.getRestaurantByBeacon(model.currentBeacon) }
+                    .observeOn(AndroidSchedulers.mainThread())
 
-    /*private fun observeAddClicks(): Disposable {
-        return view.addClicks()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe {
-                    view.updateOrderItems(model.addOrderItem(it))
-                }
-    }*/
+
+    private fun observeAddClicks() = view.menuItemAddClicked()
+                .subscribe { model.addOrderItem(it) }
+
 }

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
     private val beaconDetected: BehaviorSubject<List<BeaconUID>> = BehaviorSubject.create()
 
     fun getBeaconDetected(): Observable<List<BeaconUID>> {
-        return Observable.interval(1, TimeUnit.SECONDS)
+        return Observable.interval(2, TimeUnit.SECONDS)
                 .map { listOf(
                         BeaconUID(
                                 namespace = "edd1ebeac04e5defa017",
@@ -60,8 +60,6 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
         setContentView(view)
 
-        presenter.onCreate()
-
         // ask for permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -73,6 +71,11 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
             }
         }
 
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        presenter.onCreate()
     }
 
     override fun onPostResume() {
