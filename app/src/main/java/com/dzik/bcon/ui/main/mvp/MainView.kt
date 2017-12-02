@@ -13,6 +13,7 @@ import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.dzik.bcon.ui.main.ui.BeaconNotFoundFragment
+import com.dzik.bcon.ui.main.ui.MainFragmentPagerAdapter
 import com.dzik.bcon.ui.main.ui.menuItems.MenuItemsFragment
 import com.dzik.bcon.ui.main.ui.orderItems.OrderItemsFragment
 import io.reactivex.Observable
@@ -35,9 +36,9 @@ class MainView @Inject constructor(
     private var isBeaconFound: Boolean = false
         set(value) {
             if(value)
-                this.show(frame_layout, menuItemsFragment)
+                mainViewPager.currentItem = 1
             else
-                this.show(frame_layout, beaconNotFoundFragment)
+                mainViewPager.currentItem = 0
 
             field = value
         }
@@ -45,29 +46,41 @@ class MainView @Inject constructor(
     init {
         View.inflate(mainActivity, R.layout.activity_main, this)
 
+        val fragmentPager = MainFragmentPagerAdapter(mainActivity.supportFragmentManager,
+                mutableListOf(beaconNotFoundFragment, menuItemsFragment, orderItemsFragment))
+        mainViewPager.adapter = fragmentPager
+        mainViewPager.offscreenPageLimit = 4
+
         navigation.setOnNavigationItemSelectedListener(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
+                    val dupa = mainViewPager
+
                     when (item.itemId) {
                         R.id.menu_items_tab -> {
                             if(isBeaconFound)
-                                this.show(frame_layout, menuItemsFragment)
+                                mainViewPager.currentItem = 1
                             else
-                                this.show(frame_layout, beaconNotFoundFragment)
+                                mainViewPager.currentItem = 0
 
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.order_items_tab -> {
-                            this.show(frame_layout, orderItemsFragment)
+                            mainViewPager.currentItem = 2
                             return@OnNavigationItemSelectedListener true
                         }
                     }
                     false
                 })
 
-        this.show(frame_layout, beaconNotFoundFragment)
+        //this.show(frame_layout, beaconNotFoundFragment)
+
+        menuItemAddClicked().subscribe { menuItem ->
+            updateOrderItems(listOf(menuItem, menuItem, menuItem))
+        }
     }
 
-    private fun show(dsc: FrameLayout, src: Fragment) {
+    /*private fun show(dsc: FrameLayout, src: Fragment) {
         val fragmentTransaction = mainActivity.supportFragmentManager.beginTransaction()
         this.visitedTabs.forEach { fragment -> fragmentTransaction.hide(fragment) }
 
@@ -77,7 +90,7 @@ class MainView @Inject constructor(
         } else fragmentTransaction.show(src)
 
         fragmentTransaction.commit()
-    }
+    }*/
 
     fun updateRestaurant(restaurant: Restaurant?) {
         if(restaurant != null) {

@@ -9,15 +9,15 @@
     tools:context="com.dzik.bcon.ui.main.MainActivity"
     tools:layout_editor_absoluteY="25dp">
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainViewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside"></FrameLayout>
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frame_layout"
+        app:layout_constraintTop_toBottomOf="@+id/mainViewPager"
         app:menu="@menu/navigation" />
 
 </android.support.constraint.ConstraintLayout>

@@ -33,7 +33,7 @@ class MenuItemsFragment @Inject constructor(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity.menu_list_view.adapter = this.menuItemsAdapter
+        menu_list_view.adapter = this.menuItemsAdapter
 
         restaurantEmitter.subscribe { restaurant ->
             menuItemsAdapter.clear()

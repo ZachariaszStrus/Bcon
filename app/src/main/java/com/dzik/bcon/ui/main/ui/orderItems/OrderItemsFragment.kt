@@ -10,12 +10,14 @@ import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import kotlinx.android.synthetic.main.menu_items_fragment.*
+import kotlinx.android.synthetic.main.order_items_fragment.*
 import javax.inject.Inject
 
 
+@SuppressLint("ValidFragment")
 @MainActivityScope
 class OrderItemsFragment @Inject constructor(
-//        val orderItemsAdapter: OrderItemsAdapter
+        val orderItemsAdapter: OrderItemsAdapter
 ): Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -25,11 +27,11 @@ class OrderItemsFragment @Inject constructor(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        activity.menu_list_view.adapter = this.orderItemsAdapter
+        ordersListView.adapter = this.orderItemsAdapter
     }
 
     fun updateList(newList: List<MenuItem>) {
-//        orderItemsAdapter.clear()
-//        orderItemsAdapter.addAll(newList)
+        orderItemsAdapter.clear()
+        orderItemsAdapter.addAll(newList)
     }
 }
