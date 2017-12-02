@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
-import kotlinx.android.synthetic.main.menu_items_fragment.*
+import com.dzik.bcon.ui.main.viewModel.OrderItemViewModel
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.order_item_view.*
 import kotlinx.android.synthetic.main.order_items_fragment.*
 import javax.inject.Inject
 
@@ -18,7 +21,11 @@ import javax.inject.Inject
 @MainActivityScope
 class OrderItemsFragment @Inject constructor(
         val orderItemsAdapter: OrderItemsAdapter
-): Fragment() {
+): Fragment(), OrderListView {
+
+    private val sendEmitter = BehaviorSubject.create<Unit>()
+
+    private val clearEmitter = BehaviorSubject.create<Unit>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -28,10 +35,20 @@ class OrderItemsFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ordersListView.adapter = this.orderItemsAdapter
+
+        sendButton.setOnClickListener { sendEmitter.onNext(Unit) }
+
+        clearButton.setOnClickListener { clearEmitter.onNext(Unit) }
     }
 
-    fun updateList(newList: List<MenuItem>) {
+    override fun updateList(newList: List<OrderItemViewModel>) {
         orderItemsAdapter.clear()
         orderItemsAdapter.addAll(newList)
     }
+
+    override fun orderItemRemoveClick() = orderItemsAdapter.itemRemoveEmitter.hide()
+
+    override fun sendClick() = sendEmitter.hide()
+
+    override fun clearClick() = clearEmitter.hide()
 }

@@ -16,6 +16,8 @@ import com.dzik.bcon.ui.main.ui.BeaconNotFoundFragment
 import com.dzik.bcon.ui.main.ui.MainFragmentPagerAdapter
 import com.dzik.bcon.ui.main.ui.menuItems.MenuItemsFragment
 import com.dzik.bcon.ui.main.ui.orderItems.OrderItemsFragment
+import com.dzik.bcon.ui.main.ui.orderItems.OrderListView
+import com.dzik.bcon.ui.main.viewModel.OrderItemViewModel
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.menu_items_fragment.*
@@ -74,10 +76,6 @@ class MainView @Inject constructor(
                 })
 
         //this.show(frame_layout, beaconNotFoundFragment)
-
-        menuItemAddClicked().subscribe { menuItem ->
-            updateOrderItems(listOf(menuItem, menuItem, menuItem))
-        }
     }
 
     /*private fun show(dsc: FrameLayout, src: Fragment) {
@@ -109,11 +107,10 @@ class MainView @Inject constructor(
         menuItemsFragment.menuItemsSetRefreshing(value)
     }
 
-    fun updateOrderItems(newList: List<MenuItem>) {
-        orderItemsFragment.updateList(newList)
-    }
-
     fun menuItemAddClicked(): Observable<MenuItem> {
         return menuItemsFragment.menuItemAddClicked()
     }
+
+    val orderListView: OrderListView
+        get() = orderItemsFragment
 }

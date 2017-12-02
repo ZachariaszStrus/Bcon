@@ -20,7 +20,7 @@ class MainModel @Inject constructor(
     val currentBeacon
         get() = beacons.firstOrNull()
 
-    var orderItems = mutableListOf<MenuItem>()
+    var orderItems = mutableMapOf<MenuItem, Int>()
 
     var beacons: List<BeaconUID> = emptyList()
 
@@ -41,9 +41,13 @@ class MainModel @Inject constructor(
         }
     }
 
-    fun addOrderItem(menuItem: MenuItem): List<MenuItem> {
-        orderItems.add(menuItem)
+    fun addOrderItem(menuItem: MenuItem): MutableMap<MenuItem, Int> {
+        orderItems.put(menuItem, orderItems[menuItem]?.inc() ?: 1)
         return orderItems
+    }
+
+    fun clearOrderItems() {
+        orderItems.clear()
     }
 
     fun sendOrder(): Observable<Any> {

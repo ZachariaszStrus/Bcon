@@ -9,9 +9,9 @@ data class Order (
 
         var orderItemRequestList: List<OrderItem>
 ) {
-        constructor(menuItems: List<MenuItem>, beaconUID: BeaconUID, fcmToken: String) : this(
+        constructor(menuItems: Map<MenuItem, Int>, beaconUID: BeaconUID, fcmToken: String) : this(
                 beaconUID = beaconUID,
-                orderItemRequestList = menuItems.map { OrderItem(it) },
+                orderItemRequestList = menuItems.map { OrderItem(it.key.id, it.value) },
                 fcmToken = fcmToken
         )
 }
