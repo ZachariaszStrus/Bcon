@@ -17,20 +17,28 @@ class MainModel @Inject constructor(
         val mainActivity: MainActivity,
         val restaurantService: RestaurantService
 ) {
+    val currentBeacon
+        get() = beacons.firstOrNull()
+
     var orderItems = mutableListOf<MenuItem>()
 
-    var currentBeacon: BeaconUID? = null
+    var beacons: List<BeaconUID> = emptyList()
 
     var currentRestaurant: Restaurant? = null
 
-    fun detectBeacon(): Observable<BeaconUID> {
+    fun detectBeacon(): Observable<BeaconUID?> {
         return mainActivity.getBeaconDetected()
-                .doOnNext { currentBeacon = it }
+                .doOnNext { beacons = it }
+                .map { currentBeacon }
     }
 
-    fun getRestaurantByBeacon(beaconUID: BeaconUID): Observable<Restaurant> {
-        return restaurantService.getRestaurant(beaconUID.namespace, beaconUID.instance)
-                .doOnNext { currentRestaurant = it }
+    fun getRestaurantByBeacon(beaconUID: BeaconUID?): Observable<Restaurant?> {
+        return if(beaconUID != null) {
+            restaurantService.getRestaurant(beaconUID.namespace, beaconUID.instance)
+                    .doOnNext { currentRestaurant = it }
+        } else {
+            Observable.just(null)
+        }
     }
 
     fun addOrderItem(menuItem: MenuItem): List<MenuItem> {

@@ -101,10 +101,6 @@ class MainView @Inject constructor(
 
     }
 
-    fun showProgress(show: Boolean) {
-        beaconNotFoundFragment.showProgress(show)
-    }
-
     fun menuItemsRefreshed(): Observable<Unit> {
         return menuItemsFragment.menuItemsRefreshed()
     }
