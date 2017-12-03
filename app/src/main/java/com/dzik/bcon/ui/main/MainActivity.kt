@@ -39,14 +39,14 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
     private val beaconDetected: BehaviorSubject<List<BeaconUID>> = BehaviorSubject.create()
 
     fun getBeaconDetected(): Observable<List<BeaconUID>> {
-        return Observable.interval(2, TimeUnit.SECONDS)
-                .map { listOf(
-                        BeaconUID(
-                                namespace = "edd1ebeac04e5defa017",
-                                instance = "89fac117b149"
-                        )
-                ) }
-//        return beaconDetected.hide()
+//        return Observable.interval(2, TimeUnit.SECONDS)
+//                .map { listOf(
+//                        BeaconUID(
+//                                namespace = "edd1ebeac04e5defa017",
+//                                instance = "89fac117b149"
+//                        )
+//                ) }
+        return beaconDetected.hide()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

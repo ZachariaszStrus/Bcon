@@ -31,9 +31,10 @@ class MainPresenter @Inject constructor(
     }
 
     private fun observeBeaconDetection() = model.detectBeacon()
-            .doOnNext { Log.i("MAIN_PRESENTER new beacon:", it.toString()) }
+            .doOnNext { Log.i("MAIN_PRESENTER new beacon", it?.instance) }
             .distinctUntilChanged()
             .downloadRestaurantData()
+            .doOnNext { Log.i("MAIN_PRESENTER restaurant", it?.name) }
             .doOnNext { model.clearOrderItems() }
             .doOnNext { view.updateRestaurant(it) }
             .doOnError { Log.e("MAIN_PRESENTER", it.message) }
