@@ -15,19 +15,20 @@ import com.dzik.bcon.ui.main.mvp.MainPresenter
 import com.dzik.bcon.ui.main.dagger.DaggerMainActivityComponent
 import com.dzik.bcon.ui.main.dagger.MainActivityModule
 import com.dzik.bcon.ui.main.mvp.MainView
-import com.google.firebase.iid.FirebaseInstanceId
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import org.altbeacon.beacon.*
 import javax.inject.Inject
 import org.altbeacon.beacon.Beacon
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     companion object {
         private const val PERMISSION_REQUEST_COARSE_LOCATION = 1
         private const val TAG = "BEACON"
+        private const val MAX_BEACON_DISTANCE = 2
+        private const val EDDYSTONE_UUID = 0xfeaa
+        private const val EDDYSTONE_UID_TYPECODE = 0x00
     }
 
     @Inject lateinit var presenter: MainPresenter
@@ -38,16 +39,7 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     private val beaconDetected: BehaviorSubject<List<BeaconUID>> = BehaviorSubject.create()
 
-    fun getBeaconDetected(): Observable<List<BeaconUID>> {
-//        return Observable.interval(2, TimeUnit.SECONDS)
-//                .map { listOf(
-//                        BeaconUID(
-//                                namespace = "edd1ebeac04e5defa017",
-//                                instance = "89fac117b149"
-//                        )
-//                ) }
-        return beaconDetected.hide()
-    }
+    fun getBeaconDetected(): Observable<List<BeaconUID>> = beaconDetected.hide()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,38 +93,15 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
 
     override fun didRangeBeaconsInRegion(beacons: Collection<Beacon>, region: Region) {
         beaconDetected.onNext(beacons
-                .filter { it.serviceUuid == 0xfeaa && it.beaconTypeCode == 0x00 }
+                .filter { it.serviceUuid == EDDYSTONE_UUID &&
+                        it.beaconTypeCode == EDDYSTONE_UID_TYPECODE }
+                .filter { it.distance < MAX_BEACON_DISTANCE }
                 .sortedBy { it.distance }
                 .map { BeaconUID(
                         it.id1.toString().substring(2),
                         it.id2.toString().substring(2))
                 }
         )
-
-//        Log.d(TAG, "${beacons.size} beacons")
-//        for (beacon in beacons) {
-//            if (beacon.serviceUuid == 0xfeaa && beacon.beaconTypeCode == 0x00) {
-//                // This is a Eddystone-UID frame
-//                val namespaceId = beacon.id1
-//                val instanceId = beacon.id2
-//                Log.d(TAG, "$instanceId ${beacon.distance}")
-//
-//                // Do we have telemetry data?
-//                if (beacon.extraDataFields.size > 0) {
-//                    val telemetryVersion = beacon.extraDataFields[0]
-//                    val batteryMilliVolts = beacon.extraDataFields[1]
-//                    val pduCount = beacon.extraDataFields[3]
-//                    val uptime = beacon.extraDataFields[4]
-//
-//                    Log.d(TAG, "The above beacon is sending telemetry version " +
-//                            telemetryVersion +
-//                            ", has been up for : " + uptime + " seconds" +
-//                            ", has a battery level of " + batteryMilliVolts + " mV" +
-//                            ", and has transmitted " + pduCount + " advertisements.")
-//
-//                }
-//            }
-//        }
     }
 
 

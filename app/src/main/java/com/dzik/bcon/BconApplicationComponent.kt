@@ -7,10 +7,7 @@ import dagger.Component
 import org.altbeacon.beacon.BeaconManager
 
 @BconApplicationScope
-@Component(modules = arrayOf(
-        BconApplicationModule::class,
-        PicassoModule::class
-))
+@Component(modules = [(BconApplicationModule::class), (PicassoModule::class)])
 interface BconApplicationComponent {
 
     fun restaurantService(): RestaurantService
