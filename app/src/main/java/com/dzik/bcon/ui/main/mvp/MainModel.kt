@@ -26,18 +26,19 @@ class MainModel @Inject constructor(
 
     var currentRestaurant: Restaurant? = null
 
-    fun detectBeacon(): Observable<BeaconUID?> {
+    fun detectBeacons(): Observable<List<BeaconUID>> {
         return mainActivity.getBeaconDetected()
                 .doOnNext { beacons = it }
-                .map { currentBeacon }
     }
 
-    fun getRestaurantByBeacon(beaconUID: BeaconUID?): Observable<Restaurant?> {
-        return if(beaconUID != null) {
-            restaurantService.getRestaurant(beaconUID.namespace, beaconUID.instance)
+    fun getRestaurantByCurrentBeacon(): Observable<Pair<Boolean,Restaurant?>> {
+        return if(currentBeacon != null) {
+            restaurantService.getRestaurant(currentBeacon!!.namespace,
+                    currentBeacon!!.instance)
                     .doOnNext { currentRestaurant = it }
+                    .map { Pair(true, it) }
         } else {
-            Observable.just(null)
+            Observable.just(Pair(true, null))
         }
     }
 
@@ -56,7 +57,7 @@ class MainModel @Inject constructor(
         return if(currentBeacon != null) {
             Observable.just(currentBeacon)
         } else {
-            detectBeacon()
+            detectBeacons()
         }
                 .switchMap {
                     restaurantService.sendOrder(Order(orderItems, currentBeacon!!, fcmToken))

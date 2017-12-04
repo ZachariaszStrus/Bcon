@@ -30,30 +30,30 @@ class MainPresenter @Inject constructor(
         disposables.clear()
     }
 
-    private fun observeBeaconDetection() = model.detectBeacon()
-            .doOnNext { Log.i("MAIN_PRESENTER new beacon", it?.instance) }
+    private fun observeBeaconDetection() = model.detectBeacons()
+            .doOnNext { Log.i("MAIN_PRESENTER new beacons", it.size.toString()) }
             .distinctUntilChanged()
             .downloadRestaurantData()
-            .doOnNext { Log.i("MAIN_PRESENTER restaurant", it?.name) }
-            .doOnNext { model.clearOrderItems() }
-            .doOnNext { view.updateRestaurant(it) }
-            .doOnError { Log.e("MAIN_PRESENTER", it.message) }
             .subscribe()
 
 
     private fun observeRefreshSwipe() = view.menuItemsRefreshed()
-            .map { model.currentBeacon }
             .downloadRestaurantData()
-            .doOnNext { view.updateRestaurant(it) }
             .doOnEach { view.menuItemsSetRefreshing(false) }
             .subscribe()
 
 
-    private fun Observable<BeaconUID?>.downloadRestaurantData() = this
-            .observeOn(AndroidSchedulers.mainThread())
+    private fun <T> Observable<T>.downloadRestaurantData() = this
             .observeOn(Schedulers.io())
-            .switchMap { model.getRestaurantByBeacon(model.currentBeacon) }
+            .switchMap { model.getRestaurantByCurrentBeacon() }
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnEach {
+                model.clearOrderItems()
+            }
+            .doOnNext {
+                Log.i("MAIN_PRESENTER restaurant", it?.second?.name ?: "null")
+                view.updateRestaurant(it?.second)
+            }
 
 
     private fun observeAddClicks() = view.menuItemAddClicked()
