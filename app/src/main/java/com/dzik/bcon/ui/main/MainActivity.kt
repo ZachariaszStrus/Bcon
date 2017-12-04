@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
         private const val EDDYSTONE_UUID = 0xfeaa
         private const val EDDYSTONE_UID_TYPECODE = 0x00
 
-        val debugMode = false
-        
+        val debugMode = true
+
     }
 
     @Inject lateinit var presenter: MainPresenter

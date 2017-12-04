@@ -19,11 +19,13 @@ class MainPresenter @Inject constructor(
     private val disposables = CompositeDisposable()
 
     fun onCreate() {
-        disposables.add(observeBeaconDetection())
-        disposables.add(observeRefreshSwipe())
-        disposables.add(observeAddClicks())
-        disposables.add(observeSendClicks())
-        disposables.add(observeClearClicks())
+        disposables.addAll(
+                observeBeaconDetection(),
+                observeRefreshSwipe(),
+                observeAddClicks(),
+                observeSendClicks(),
+                observeClearClicks()
+        )
     }
 
     fun onDestroy() {
@@ -31,8 +33,6 @@ class MainPresenter @Inject constructor(
     }
 
     private fun observeBeaconDetection() = model.detectBeacons()
-            .doOnNext { Log.i("MAIN_PRESENTER new beacons", it.size.toString()) }
-            .distinctUntilChanged()
             .downloadRestaurantData()
             .subscribe()
 

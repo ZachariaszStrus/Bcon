@@ -1,5 +1,6 @@
 package com.dzik.bcon.ui.main.mvp
 
+import android.util.Log
 import com.dzik.bcon.model.BeaconUID
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Order
@@ -28,6 +29,8 @@ class MainModel @Inject constructor(
 
     fun detectBeacons(): Observable<List<BeaconUID>> {
         return mainActivity.getBeaconDetected()
+                .doOnNext { Log.i("Beacons", it.toString()) }
+                .filter { it.firstOrNull() != currentBeacon }
                 .doOnNext { beacons = it }
     }
 
