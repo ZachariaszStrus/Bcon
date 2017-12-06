@@ -24,7 +24,8 @@ class MainPresenter @Inject constructor(
                 observeRefreshSwipe(),
                 observeAddClicks(),
                 observeSendClicks(),
-                observeClearClicks()
+                observeClearClicks(),
+                observeOrderItemRemove()
         )
     }
 
@@ -63,10 +64,12 @@ class MainPresenter @Inject constructor(
             }
 
     private fun observeSendClicks() = view.orderListView.sendClick()
+            .doOnNext { view.orderListView.setProgress(true) }
             .observeOn(Schedulers.io())
             .switchMap { model.sendOrder() }
 
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnEach { view.orderListView.setProgress(false) }
             .doOnNext {
                 model.clearOrderItems()
                 updateOrderList()
@@ -81,12 +84,18 @@ class MainPresenter @Inject constructor(
             .subscribe()
 
 
-    private fun updateOrderList() {
+    private fun updateOrderList() =
         view.orderListView.updateList(model.orderItems.map {
             OrderItemViewModel(
                     it.key,
                     it.value
             )
         })
-    }
+
+    private fun observeOrderItemRemove() = view.orderListView.orderItemRemoveClick()
+            .subscribe { orderItems ->
+                val orderItemVM = model.removeOrderItem(orderItems)
+                        .map { OrderItemViewModel(it.key, it.value) }
+                view.orderListView.updateList(orderItemVM)
+            }
 }

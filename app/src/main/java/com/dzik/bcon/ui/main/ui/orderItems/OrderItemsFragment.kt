@@ -44,6 +44,14 @@ class OrderItemsFragment @Inject constructor(
     override fun updateList(newList: List<OrderItemViewModel>) {
         orderItemsAdapter.clear()
         orderItemsAdapter.addAll(newList)
+
+        if(newList.isEmpty()) {
+            sendButton.visibility = View.GONE
+            clearButton.visibility = View.GONE
+        } else {
+            sendButton.visibility = View.VISIBLE
+            clearButton.visibility = View.VISIBLE
+        }
     }
 
     override fun orderItemRemoveClick() = orderItemsAdapter.itemRemoveEmitter.hide()
@@ -51,4 +59,8 @@ class OrderItemsFragment @Inject constructor(
     override fun sendClick() = sendEmitter.hide()
 
     override fun clearClick() = clearEmitter.hide()
+
+    override fun setProgress(show: Boolean) {
+        progressBar.visibility = if(show) View.VISIBLE else View.GONE
+    }
 }

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
-import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.squareup.picasso.Picasso
@@ -48,7 +47,7 @@ class MenuItemsAdapter @Inject constructor (
                     val menuItem = getItem(position - 1)
 
                     view.nameTextView.text = menuItem.name
-                    view.priceTextView.text = menuItem.price.toString()
+                    view.quantityTextView.text = menuItem.price.toString()
 
                     view.menuItemButton.setOnClickListener {
                         menuItemAddEmitter.onNext(menuItem)

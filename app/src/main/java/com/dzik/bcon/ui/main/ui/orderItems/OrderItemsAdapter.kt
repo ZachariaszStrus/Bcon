@@ -1,16 +1,15 @@
 package com.dzik.bcon.ui.main.ui.orderItems
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import com.dzik.bcon.ApplicationContext
 import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
 import com.dzik.bcon.ui.main.viewModel.OrderItemViewModel
+import com.squareup.picasso.Picasso
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.order_item_view.view.*
 import javax.inject.Inject
@@ -18,9 +17,9 @@ import javax.inject.Inject
 
 @MainActivityScope
 class OrderItemsAdapter @Inject constructor (
-        val mainActivity: MainActivity
-        ) : ArrayAdapter<OrderItemViewModel>(mainActivity, 0) {
-
+        val mainActivity: MainActivity,
+        val picasso: Picasso
+) : ArrayAdapter<OrderItemViewModel>(mainActivity, 0) {
 
     val itemRemoveEmitter = BehaviorSubject.create<MenuItem>()
 
@@ -36,8 +35,11 @@ class OrderItemsAdapter @Inject constructor (
         }
 
         convertView.nameTextView.text = orderItem.menuItem.name
-        convertView.priceTextView.text = orderItem.menuItem.price.toString()
-        convertView.quantityTextView.text = orderItem.quantity.toString()
+        convertView.quantityTextView.text = "x ${orderItem.quantity}"
+
+        picasso.load(orderItem.menuItem.imageUrl)
+                .placeholder(R.drawable.ic_photo_black_48px)
+                .into(convertView.imageView)
 
         return convertView
     }

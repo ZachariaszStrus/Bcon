@@ -54,6 +54,18 @@ class MainModel @Inject constructor(
         orderItems.clear()
     }
 
+    fun removeOrderItem(menuItem: MenuItem): MutableMap<MenuItem, Int> {
+        orderItems[menuItem] ?: return orderItems
+
+        if(orderItems[menuItem] == 1) {
+            orderItems.remove(menuItem)
+        } else {
+            orderItems.put(menuItem, orderItems[menuItem]!!.dec())
+        }
+
+        return orderItems
+    }
+
     fun sendOrder(): Observable<Any> {
         val fcmToken = FirebaseInstanceId.getInstance().token ?: ""
 

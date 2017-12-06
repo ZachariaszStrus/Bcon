@@ -48,14 +48,10 @@ class MainActivity : AppCompatActivity(), BeaconConsumer, RangeNotifier {
             if(debugMode) {
                 Observable.interval(3, TimeUnit.SECONDS)
                         .map {
-                            if(Math.random() < 0.5) {
-                                listOf(BeaconUID(
-                                        namespace = "edd1ebeac04e5defa017",
-                                        instance = "89fac117b149"
-                                ))
-                            } else {
-                                emptyList()
-                            }
+                            listOf(BeaconUID(
+                                    namespace = "edd1ebeac04e5defa017",
+                                    instance = "89fac117b149"
+                            ))
                         }
             } else {
                 beaconDetected.hide()

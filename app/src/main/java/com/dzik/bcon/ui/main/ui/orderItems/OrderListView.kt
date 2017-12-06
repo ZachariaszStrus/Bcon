@@ -14,4 +14,6 @@ interface OrderListView {
     fun sendClick(): Observable<Unit>
 
     fun clearClick(): Observable<Unit>
+
+    fun setProgress(show: Boolean)
 }

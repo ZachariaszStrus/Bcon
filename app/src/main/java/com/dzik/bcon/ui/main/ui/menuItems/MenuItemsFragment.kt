@@ -39,14 +39,6 @@ class MenuItemsFragment @Inject constructor(
             menuItemsAdapter.clear()
             menuItemsAdapter.headerTitle = restaurant.name
             menuItemsAdapter.addAll(restaurant.menu)
-            menuItemsAdapter.notifyDataSetChanged()
-
-            /*picasso
-                    .load(restaurant.imageUrl)
-                    .into(restaurantImageView)*/
-
-
-            //nameTextView.text = restaurant.name
         }
 
         menuListRefresh.setOnRefreshListener {
