@@ -8,6 +8,9 @@ import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.ui.main.MainActivity
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
+import com.dzik.bcon.ui.main.viewModel.MenuItemViewModel
+import com.dzik.bcon.ui.main.viewModel.MenuViewModel
+import com.dzik.bcon.ui.main.viewModel.RestaurantInfoViewModel
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -20,44 +23,44 @@ import javax.inject.Inject
 class MenuItemsAdapter @Inject constructor (
         val mainActivity: MainActivity,
         val picasso: Picasso
-) : ArrayAdapter<MenuItem>(mainActivity, 0) {
+) : ArrayAdapter<MenuViewModel>(mainActivity, 0) {
 
-    var headerTitle = ""
     private val menuItemAddEmitter = BehaviorSubject.create<MenuItem>()
 
-    override fun getCount(): Int {
-        return super.getCount() + 1
-    }
-
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        val item = getItem(position)
 
-        return view ?:
-                if(position == 0) {
-                    val view = LayoutInflater.from(context)
-                            .inflate(R.layout.menu_list_header, parent, false)
+        return when(item) {
+            is MenuItemViewModel -> {
+                val convertView =  LayoutInflater.from(context)
+                        .inflate(R.layout.menu_item_view, parent, false)
 
-                    view.menuListHeaderImage.setImageResource(R.drawable.restaurant)
-                    view.menuItemsTitle.text = headerTitle
+                convertView.nameTextView.text = item.menuItem.name
+                convertView.quantityTextView.text = item.menuItem.price.toString()
 
-                    view
-                } else {
-                    val view =  LayoutInflater.from(context)
-                            .inflate(R.layout.menu_item_view, parent, false)
+                convertView.menuItemButton.setOnClickListener {
+                    menuItemAddEmitter.onNext(item.menuItem)
+                }
 
-                    val menuItem = getItem(position - 1)
+                picasso.load(item.menuItem.imageUrl)
+                        .placeholder(R.drawable.ic_photo_black_48px)
+                        .into(convertView.imageView)
 
-                    view.nameTextView.text = menuItem.name
-                    view.quantityTextView.text = menuItem.price.toString()
+                convertView
+            }
+            is RestaurantInfoViewModel -> {
+                val convertView = LayoutInflater.from(context)
+                        .inflate(R.layout.menu_list_header, parent, false)
 
-                    view.menuItemButton.setOnClickListener {
-                        menuItemAddEmitter.onNext(menuItem)
-                    }
+                picasso.load(item.imageUrl)
+                        .placeholder(R.drawable.ic_photo_black_48px)
+                        .into(convertView.menuListHeaderImage)
 
-                    picasso.load(menuItem.imageUrl)
-                            .placeholder(R.drawable.ic_photo_black_48px)
-                            .into(view.imageView)
+                convertView.menuItemsTitle.text = item.name
 
-                    view
+                convertView
+            }
+            else -> LayoutInflater.from(context).inflate(R.layout.menu_item_view, parent, false)
         }
     }
 

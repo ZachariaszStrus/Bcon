@@ -38,7 +38,13 @@ class MainModel @Inject constructor(
         return if(currentBeacon != null) {
             restaurantService.getRestaurant(currentBeacon!!.namespace,
                     currentBeacon!!.instance)
-                    .doOnNext { currentRestaurant = it }
+                    .doOnNext {
+                        if(currentRestaurant != it) {
+                            clearOrderItems()
+                        }
+
+                        currentRestaurant = it
+                    }
                     .map { Pair(true, it) }
         } else {
             Observable.just(Pair(true, null))

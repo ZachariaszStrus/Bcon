@@ -10,6 +10,8 @@ import com.dzik.bcon.R
 import com.dzik.bcon.model.MenuItem
 import com.dzik.bcon.model.Restaurant
 import com.dzik.bcon.ui.main.dagger.MainActivityScope
+import com.dzik.bcon.ui.main.viewModel.MenuItemViewModel
+import com.dzik.bcon.ui.main.viewModel.RestaurantInfoViewModel
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -37,8 +39,11 @@ class MenuItemsFragment @Inject constructor(
 
         restaurantEmitter.subscribe { restaurant ->
             menuItemsAdapter.clear()
-            menuItemsAdapter.headerTitle = restaurant.name
-            menuItemsAdapter.addAll(restaurant.menu)
+            menuItemsAdapter.add(RestaurantInfoViewModel(
+                    name = restaurant.name,
+                    imageUrl = restaurant.imageUrl
+            ))
+            menuItemsAdapter.addAll(restaurant.menu.map { MenuItemViewModel(it) })
         }
 
         menuListRefresh.setOnRefreshListener {
