@@ -57,6 +57,8 @@ class MenuItemsAdapter @Inject constructor (
                         .into(convertView.menuListHeaderImage)
 
                 convertView.menuItemsTitle.text = item.name
+                convertView.paymentMethods.text = "Payment methods : " +
+                        item.paymentOptions.joinToString("/") { it.str }
 
                 convertView
             }

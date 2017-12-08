@@ -41,7 +41,8 @@ class MenuItemsFragment @Inject constructor(
             menuItemsAdapter.clear()
             menuItemsAdapter.add(RestaurantInfoViewModel(
                     name = restaurant.name,
-                    imageUrl = restaurant.imageUrl
+                    imageUrl = restaurant.imageUrl,
+                    paymentOptions = restaurant.paymentOptions
             ))
             menuItemsAdapter.addAll(restaurant.menu.map { MenuItemViewModel(it) })
         }

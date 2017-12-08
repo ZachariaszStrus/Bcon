@@ -48,7 +48,7 @@ class MainPresenter @Inject constructor(
             .observeOn(Schedulers.io())
             .switchMap { model.getRestaurantByCurrentBeacon() }
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnEach { view.orderListView.updateList(emptyList()) }
+            .doOnEach { updateOrderList() }
             .doOnNext {
                 Log.i("MAIN_PRESENTER restaurant", it?.second?.name ?: "null")
                 view.updateRestaurant(it?.second)
