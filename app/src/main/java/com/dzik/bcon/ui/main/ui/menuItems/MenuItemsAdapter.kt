@@ -62,7 +62,6 @@ class MenuItemsAdapter @Inject constructor (
 
                 convertView
             }
-            else -> LayoutInflater.from(context).inflate(R.layout.menu_item_view, parent, false)
         }
     }
 
